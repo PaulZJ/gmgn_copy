@@ -49,9 +49,9 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
-  late TabController _tabController;
+class _HomePageState extends State<HomePage> {
   final List<String> _tabs = ["Trenches", "New Coins", "Hot", "Copy Trading", "Monitor", "Track", "Positions"];
+  int _selectedTabIndex = 0; // 添加选中Tab索引
 
   final _chainSelectorKey = GlobalKey();
   late ChainInfo _selectedChain;
@@ -161,7 +161,6 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: _tabs.length, vsync: this);
     _selectedChain = ChainInfo(
         name: 'SOL',
         iconUrl:
@@ -170,7 +169,6 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
 
   @override
   void dispose() {
-    _tabController.dispose();
     super.dispose();
   }
 
@@ -267,36 +265,56 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
         ),
         const SizedBox(width: 16),
       ],
-      bottom: TabBar(
-        controller: _tabController,
-        isScrollable: true,
-        indicatorSize: TabBarIndicatorSize.label,
-        indicator: BoxDecoration(
-          borderRadius: BorderRadius.circular(8),
-          color: Colors.white,
-        ),
-        overlayColor: MaterialStateProperty.all(Colors.transparent),
-        labelColor: Colors.black,
-        unselectedLabelColor: Colors.white,
-        tabs: _tabs.map((String name) => Tab(text: name)).toList(),
-        labelStyle: const TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: 14,
-        ),
-        unselectedLabelStyle: const TextStyle(
-          fontWeight: FontWeight.normal,
-          fontSize: 14,
+      bottom: PreferredSize(
+        preferredSize: const Size.fromHeight(48),
+        child: Container(
+          height: 48,
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: _tabs.asMap().entries.map((entry) {
+                final index = entry.key;
+                final tabName = entry.value;
+                final isSelected = index == _selectedTabIndex;
+                
+                return GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      _selectedTabIndex = index;
+                    });
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.only(right: 8),
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: isSelected ? Colors.grey[800] : Colors.transparent,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(
+                      tabName,
+                      style: TextStyle(
+                        color: isSelected ? Colors.white : Colors.grey[400],
+                        fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                        fontSize: 14,
+                      ),
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
         ),
       ),
     );
   }
 
   Widget _buildBody(BuildContext context) {
-    return TabBarView(
-      controller: _tabController,
+    return IndexedStack(
+      index: _selectedTabIndex,
       children: [
         _buildTokenListTab(context), // 第一个Tab
-        ...List.generate(_tabs.length - 1, (index) => Center(child: Text(_tabs[index + 1]))),
+        ...List.generate(_tabs.length - 1, (index) => _buildPlaceholderTab(_tabs[index + 1])),
       ],
     );
   }
@@ -322,13 +340,6 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   Widget _buildFilterBar(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final isVerySmallScreen = screenWidth < 350;
-    
-    final chipTheme = Theme.of(context).chipTheme.copyWith(
-      backgroundColor: Colors.grey[850],
-      labelStyle: const TextStyle(color: Colors.white, fontSize: 11),
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
-    );
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 8, 8, 8),
@@ -354,18 +365,28 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
             ),
             const SizedBox(width: 4),
           ],
-          Flexible(
-            child: ChipTheme(
-              data: chipTheme,
-              child: const Chip(label: Text('Ξ 0')),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+            decoration: BoxDecoration(
+              color: Colors.grey[850],
+              borderRadius: BorderRadius.circular(6),
+            ),
+            child: const Text(
+              'Ξ 0',
+              style: TextStyle(color: Colors.white, fontSize: 11),
             ),
           ),
           if (!isVerySmallScreen) ...[
             const SizedBox(width: 4),
-            Flexible(
-              child: ChipTheme(
-                data: chipTheme,
-                child: const Chip(label: Text('P1')),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+              decoration: BoxDecoration(
+                color: Colors.grey[850],
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: const Text(
+                'P1',
+                style: TextStyle(color: Colors.white, fontSize: 11),
               ),
             ),
           ],
@@ -564,6 +585,38 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
             )
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildPlaceholderTab(String tabName) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.construction,
+            size: 64,
+            color: Colors.grey[600],
+          ),
+          const SizedBox(height: 16),
+          Text(
+            tabName,
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: Colors.grey[400],
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            '功能开发中...',
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.grey[600],
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:url_strategy/url_strategy.dart';
 
 import 'constants.dart';
+import 'config/performance_config.dart';
 import 'router.dart';
 import 'store/global_store.dart';
 import 'theme/app_theme.dart';
@@ -18,54 +19,69 @@ void main() async {
     setPathUrlStrategy();
   }
 
-  // 初始化全局状态
-  final globalStore = GlobalStore();
-  await globalStore.init();
-
   // 配置图片缓存
-  PaintingBinding.instance.imageCache.maximumSize = AppConstants.imageCacheSize;
-  PaintingBinding.instance.imageCache.maximumSizeBytes = AppConstants.imageCacheSizeBytes;
+  PaintingBinding.instance.imageCache.maximumSize = PerformanceConfig.imageCacheSize;
+  PaintingBinding.instance.imageCache.maximumSizeBytes = PerformanceConfig.imageCacheSizeBytes;
 
-  runApp(MyApp(globalStore: globalStore));
+  runApp(const MyApp());
 }
 
 class MyApp extends StatefulWidget {
-  final GlobalStore globalStore;
-
-  const MyApp({
-    super.key,
-    required this.globalStore,
-  });
+  const MyApp({super.key});
 
   @override
   State<MyApp> createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
+  GlobalStore? _globalStore;
+  bool _isInitialized = false;
+
   @override
   void initState() {
     super.initState();
+    _initializeApp();
+  }
+
+  Future<void> _initializeApp() async {
+    // 异步初始化全局状态
+    final globalStore = GlobalStore();
     
-    // 配置EasyLoading
-    EasyLoading.instance
-      ..displayDuration = const Duration(milliseconds: 2000)
-      ..indicatorType = EasyLoadingIndicatorType.wave
-      ..loadingStyle = EasyLoadingStyle.custom
-      ..userInteractions = false
-      ..indicatorSize = 30
-      ..backgroundColor = Colors.transparent
-      ..indicatorColor = AppColors.primary
-      ..textColor = Colors.transparent
-      ..boxShadow = <BoxShadow>[]
-      ..maskType = EasyLoadingMaskType.black
-      ..dismissOnTap = false;
+    // 设置超时时间
+    await globalStore.init().timeout(
+      PerformanceConfig.initializationTimeout,
+      onTimeout: () {
+        if (PerformanceConfig.enablePerformanceLogging) {
+          print('初始化超时，继续启动应用');
+        }
+      },
+    );
+    
+    if (mounted) {
+      setState(() {
+        _globalStore = globalStore;
+        _isInitialized = true;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    if (!_isInitialized || _globalStore == null) {
+      // 显示启动画面
+      return MaterialApp(
+        title: AppConstants.appName,
+        theme: AppTheme.lightTheme,
+        darkTheme: AppTheme.darkTheme,
+        themeMode: ThemeMode.system,
+        debugShowCheckedModeBanner: false,
+        home: const SplashScreen(),
+      );
+    }
+
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider.value(value: widget.globalStore),
+        ChangeNotifierProvider.value(value: _globalStore!),
       ],
       child: MaterialApp.router(
         title: AppConstants.appName,
@@ -99,6 +115,117 @@ class _MyAppState extends State<MyApp> {
             child: child,
           );
         },
+      ),
+    );
+  }
+}
+
+// 启动画面
+class SplashScreen extends StatefulWidget {
+  const SplashScreen({super.key});
+
+  @override
+  State<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderStateMixin {
+  late AnimationController _animationController;
+  late Animation<double> _fadeAnimation;
+  late Animation<double> _scaleAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      duration: PerformanceConfig.splashScreenDuration,
+      vsync: this,
+    );
+    
+    _fadeAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeInOut,
+    ));
+    
+    _scaleAnimation = Tween<double>(
+      begin: 0.8,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.elasticOut,
+    ));
+    
+    _animationController.forward();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppColors.primary,
+      body: Center(
+        child: AnimatedBuilder(
+          animation: _animationController,
+          builder: (context, child) {
+            return FadeTransition(
+              opacity: _fadeAnimation,
+              child: ScaleTransition(
+                scale: _scaleAnimation,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // Logo或图标
+                    Container(
+                      width: 80,
+                      height: 80,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.1),
+                            blurRadius: 20,
+                            offset: const Offset(0, 10),
+                          ),
+                        ],
+                      ),
+                      child: const Icon(
+                        Icons.rocket_launch,
+                        size: 40,
+                        color: AppColors.primary,
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    Text(
+                      AppConstants.appName,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    const SizedBox(
+                      width: 40,
+                      height: 40,
+                      child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                        strokeWidth: 3,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
       ),
     );
   }

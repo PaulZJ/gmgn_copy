@@ -89,8 +89,11 @@ class GlobalStore extends ChangeNotifier {
 
   // 初始化
   Future<void> init() async {
-    await _loadToken();
-    await _loadUserInfo();
+    // 并行执行初始化操作以提高性能
+    await Future.wait([
+      _loadToken(),
+      _loadUserInfo(),
+    ]);
   }
 
   // 加载Token
@@ -122,12 +125,17 @@ class GlobalStore extends ChangeNotifier {
       final prefs = await SharedPreferences.getInstance();
       final userInfoJson = prefs.getString(AppConstants.userInfoKey);
       if (userInfoJson != null) {
-        final userInfoMap = Map<String, dynamic>.from(
-          userInfoJson as Map<String, dynamic>,
-        );
-        _userInfo = UserInfo.fromJson(userInfoMap);
-        notifyListeners();
+        try {
+          final userInfoMap = Map<String, dynamic>.from(
+            userInfoJson as Map<String, dynamic>,
+          );
+          _userInfo = UserInfo.fromJson(userInfoMap);
+        } catch (e) {
+          // 如果解析失败，清除损坏的数据
+          await prefs.remove(AppConstants.userInfoKey);
+        }
       }
+      notifyListeners();
     } catch (e) {
       _error = '加载用户信息失败: $e';
       notifyListeners();

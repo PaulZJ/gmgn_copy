@@ -18,21 +18,90 @@
 
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="A new Flutter project.">
+  <meta name="description" content="GMGN Demo - A modern Flutter application scaffold with best practices">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <!-- iOS meta tags & icons -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="my_flutter_app">
+  <meta name="apple-mobile-web-app-title" content="GMGN Demo">
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="favicon.png"/>
 
-  <title>my_flutter_app</title>
+  <title>GMGN Demo</title>
   <link rel="manifest" href="manifest.json">
+
+  <!-- 预加载关键资源 -->
+  <link rel="preload" href="flutter_bootstrap.js" as="script">
+  
+  <!-- 添加启动画面样式 -->
+  <style>
+    .loading {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      -ms-transform: translate(-50%, -50%);
+      transform: translate(-50%, -50%);
+    }
+    
+    .loading-indicator {
+      width: 50px;
+      height: 50px;
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #6366F1;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .loading-text {
+      margin-top: 20px;
+      color: #6366F1;
+      font-family: Arial, sans-serif;
+      font-size: 16px;
+    }
+  </style>
 </head>
 <body>
+  <!-- 启动画面 -->
+  <div id="loading">
+    <div class="loading">
+      <div>
+        <div class="loading-indicator"></div>
+        <div class="loading-text">正在加载...</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 隐藏启动画面
+    window.addEventListener('load', function(ev) {
+      // 下载Flutter应用
+      _flutter.loader.loadEntrypoint({
+        serviceWorker: {
+          serviceWorkerVersion: serviceWorkerVersion,
+        },
+        onEntrypointLoaded: function(engineInitializer) {
+          engineInitializer.initializeEngine().then(function(appRunner) {
+            // 隐藏启动画面
+            document.getElementById('loading').style.display = 'none';
+            appRunner.runApp();
+          });
+        }
+      });
+    });
+  </script>
+  
   <script src="flutter_bootstrap.js" async></script>
 </body>
 </html>

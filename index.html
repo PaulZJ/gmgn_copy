@@ -34,14 +34,14 @@
 
   <script>
     // The value below is injected by flutter build, do not touch.
-    const serviceWorkerVersion = "3007075793";
+    const serviceWorkerVersion = "2129204888";
   </script>
   <!-- This script adds the flutter initialization JS code -->
   <script src="flutter.js" defer></script>
   
-  <link rel="stylesheet" type="text/css" href="https://fonts.proxy.ustclug.org/css?family=Roboto:400,700">
-  <link rel="stylesheet" type="text/css" href="https://fonts.proxy.ustclug.org/css?family=Noto+Sans+SC:400,700">
-
+  <!-- 移除远程字体link -->
+  <!-- <link rel="stylesheet" type="text/css" href="https://fonts.proxy.ustclug.org/css?family=Roboto:400,700"> -->
+  <!-- <link rel="stylesheet" type="text/css" href="https://fonts.proxy.ustclug.org/css?family=Noto+Sans+SC:400,700"> -->
 
   <style>
     body, html {
@@ -49,6 +49,7 @@
       padding: 0;
       height: 100%;
       overflow: hidden;
+      font-family: 'NotoSansSC', 'Roboto', sans-serif;
     }
     .loading-container {
       display: flex;

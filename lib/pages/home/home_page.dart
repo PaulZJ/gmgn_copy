@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 import '../../theme/app_theme.dart';
 import '../../constants.dart';
 import 'chain_dialog.dart';
+import 'login_dialog.dart';
+import 'signup_dialog.dart';
 
 // 数据模型，用于表示榜单中的每个项目
 class TokenInfo {
@@ -238,7 +240,12 @@ class _HomePageState extends State<HomePage> {
         Padding(
           padding: EdgeInsets.symmetric(vertical: 12, horizontal: isSmallScreen ? 2 : 4),
           child: OutlinedButton(
-            onPressed: () {},
+            onPressed: () {
+              SmartDialog.show(
+                alignment: Alignment.center,
+                builder: (_) => const SignUpDialog(),
+              );
+            },
             child: Text('Sign up'),
             style: OutlinedButton.styleFrom(
               foregroundColor: Colors.white,
@@ -252,7 +259,12 @@ class _HomePageState extends State<HomePage> {
         Padding(
           padding: EdgeInsets.symmetric(vertical: 12, horizontal: isSmallScreen ? 2 : 4),
           child: ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              SmartDialog.show(
+                alignment: Alignment.center,
+                builder: (_) => const LoginDialog(),
+              );
+            },
             child: Text('Login'),
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.white,

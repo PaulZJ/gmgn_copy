@@ -2,6 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:gmgn_demo/theme/app_theme.dart';
 import 'package:provider/provider.dart';
 import 'package:url_strategy/url_strategy.dart';
 
@@ -9,9 +11,9 @@ import 'constants.dart';
 import 'config/performance_config.dart';
 import 'router.dart';
 import 'store/global_store.dart';
-import 'theme/app_theme.dart';
 
 void main() async {
+  GoogleFonts.config.allowRuntimeFetching = false;
   WidgetsFlutterBinding.ensureInitialized();
 
   // 设置URL策略（Web端）

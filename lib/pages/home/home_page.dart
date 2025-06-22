@@ -267,23 +267,25 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
         ),
         const SizedBox(width: 16),
       ],
-      bottom: PreferredSize(
-        preferredSize: const Size.fromHeight(40),
-        child: Align(
-          alignment: Alignment.centerLeft,
-          child: TabBar(
-            controller: _tabController,
-            isScrollable: true,
-            tabs: _tabs.map((String name) => Tab(text: name)).toList(),
-            labelColor: Colors.white,
-            unselectedLabelColor: Colors.grey[400],
-            indicator: const UnderlineTabIndicator(
-              borderSide: BorderSide(width: 3, color: Color(0xFF33FF99)),
-              insets: EdgeInsets.symmetric(horizontal: 16),
-            ),
-            labelStyle: const TextStyle(fontWeight: FontWeight.bold),
-            unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.normal),
-          ),
+      bottom: TabBar(
+        controller: _tabController,
+        isScrollable: true,
+        indicatorSize: TabBarIndicatorSize.label,
+        indicator: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+          color: Colors.white,
+        ),
+        overlayColor: MaterialStateProperty.all(Colors.transparent),
+        labelColor: Colors.black,
+        unselectedLabelColor: Colors.white,
+        tabs: _tabs.map((String name) => Tab(text: name)).toList(),
+        labelStyle: const TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: 14,
+        ),
+        unselectedLabelStyle: const TextStyle(
+          fontWeight: FontWeight.normal,
+          fontSize: 14,
         ),
       ),
     );
@@ -333,26 +335,24 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       child: Row(
         children: [
           if (!isVerySmallScreen) ...[
-            Flexible(
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-                decoration: BoxDecoration(
-                  color: Colors.grey[900],
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Icon(Icons.new_releases, color: Colors.greenAccent, size: 14),
-                    const SizedBox(width: 4),
-                    const Text('New', style: TextStyle(fontSize: 12)),
-                    const SizedBox(width: 2),
-                    const Icon(Icons.keyboard_arrow_down, size: 16),
-                  ],
-                ),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+              decoration: BoxDecoration(
+                color: Colors.grey[900],
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: const Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.new_releases, color: Colors.greenAccent, size: 14),
+                  SizedBox(width: 4),
+                  Text('New', style: TextStyle(color: Colors.white, fontSize: 12)),
+                  SizedBox(width: 2),
+                  Icon(Icons.keyboard_arrow_down, size: 16),
+                ],
               ),
             ),
-            const SizedBox(width: 6),
+            const SizedBox(width: 4),
           ],
           Flexible(
             child: ChipTheme(
@@ -361,7 +361,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
             ),
           ),
           if (!isVerySmallScreen) ...[
-            const SizedBox(width: 6),
+            const SizedBox(width: 4),
             Flexible(
               child: ChipTheme(
                 data: chipTheme,
@@ -374,12 +374,16 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
             child: SizedBox(
               height: 32,
               child: TextField(
-                style: const TextStyle(fontSize: 11),
+                style: const TextStyle(fontSize: 11, color: Colors.white),
                 decoration: InputDecoration(
                   hintText: 'Search',
                   hintStyle: TextStyle(color: Colors.grey[400], fontSize: 11),
-                  prefixIcon: const Icon(Icons.search, size: 14),
-                  contentPadding: EdgeInsets.zero,
+                  prefixIcon: const Icon(Icons.search, size: 14, color: Colors.white),
+                  prefixIconConstraints: const BoxConstraints(
+                    minHeight: 14,
+                    minWidth: 14,
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(vertical: 8),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                     borderSide: BorderSide.none,

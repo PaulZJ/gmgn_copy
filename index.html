@@ -8,8 +8,8 @@
     The path provided below has to start and end with a slash "/" in order for
     it to work correctly.
 
-    For more details:
-    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
+    For more details, see:
+    https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
 
     This is a placeholder for base href that will be replaced by the value of
     the `--base-href` argument provided to `flutter build`.
@@ -18,90 +18,80 @@
 
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="GMGN Demo - A modern Flutter application scaffold with best practices">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="A new Flutter project.">
 
   <!-- iOS meta tags & icons -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="GMGN Demo">
+  <meta name="apple-mobile-web-app-title" content="gmgn_demo">
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="favicon.png"/>
 
-  <title>GMGN Demo</title>
+  <title>gmgn_demo</title>
   <link rel="manifest" href="manifest.json">
 
-  <!-- 预加载关键资源 -->
-  <link rel="preload" href="flutter_bootstrap.js" as="script">
+  <script>
+    // The value below is injected by flutter build, do not touch.
+    const serviceWorkerVersion = "3007075793";
+  </script>
+  <!-- This script adds the flutter initialization JS code -->
+  <script src="flutter.js" defer></script>
   
-  <!-- 添加启动画面样式 -->
+  <link rel="stylesheet" type="text/css" href="https://fonts.proxy.ustclug.org/css?family=Roboto:400,700">
+  <link rel="stylesheet" type="text/css" href="https://fonts.proxy.ustclug.org/css?family=Noto+Sans+SC:400,700">
+
+
   <style>
-    .loading {
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+    }
+    .loading-container {
       display: flex;
       justify-content: center;
       align-items: center;
-      margin: 0;
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      -ms-transform: translate(-50%, -50%);
-      transform: translate(-50%, -50%);
+      height: 100%;
+      background-color: #131313;
     }
-    
     .loading-indicator {
-      width: 50px;
-      height: 50px;
-      border: 3px solid #f3f3f3;
-      border-top: 3px solid #6366F1;
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #3498db;
       border-radius: 50%;
+      width: 40px;
+      height: 40px;
       animation: spin 1s linear infinite;
     }
-    
     @keyframes spin {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
-    
-    .loading-text {
-      margin-top: 20px;
-      color: #6366F1;
-      font-family: Arial, sans-serif;
-      font-size: 16px;
-    }
   </style>
+
 </head>
 <body>
-  <!-- 启动画面 -->
-  <div id="loading">
-    <div class="loading">
-      <div>
-        <div class="loading-indicator"></div>
-        <div class="loading-text">Loading...</div>
-      </div>
-    </div>
+
+  <div id="loading-container" class="loading-container">
+    <div class="loading-indicator"></div>
   </div>
 
   <script>
-    // 隐藏启动画面
     window.addEventListener('load', function(ev) {
-      // 下载Flutter应用
+      // Download main.dart.js
       _flutter.loader.loadEntrypoint({
         serviceWorker: {
           serviceWorkerVersion: serviceWorkerVersion,
         },
         onEntrypointLoaded: function(engineInitializer) {
           engineInitializer.initializeEngine().then(function(appRunner) {
-            // 隐藏启动画面
-            document.getElementById('loading').style.display = 'none';
             appRunner.runApp();
           });
         }
       });
     });
   </script>
-  
-  <script src="flutter_bootstrap.js" async></script>
 </body>
 </html>

@@ -7,6 +7,7 @@ import 'chain_dialog.dart';
 import 'login_dialog.dart';
 import 'signup_dialog.dart';
 import 'setting_dialog.dart';
+import 'token_trade_page.dart';
 
 // 数据模型，用于表示榜单中的每个项目
 class TokenInfo {
@@ -55,6 +56,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final List<String> _tabs = ["Trenches", "New Coins", "Hot", "Copy Trading", "Monitor", "Track", "Positions"];
   int _selectedTabIndex = 0; // 添加选中Tab索引
+  TokenInfo? _selectedToken;
 
   final _chainSelectorKey = GlobalKey();
   final _settingsButtonKey = GlobalKey();
@@ -182,6 +184,7 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: const Color(0xFF131313),
       appBar: _buildAppBar(context),
       body: _buildBody(context),
+      bottomNavigationBar: _selectedToken != null ? _buildBottomNav() : null,
     );
   }
 
@@ -192,7 +195,17 @@ class _HomePageState extends State<HomePage> {
     return AppBar(
       backgroundColor: const Color(0xFF131313),
       elevation: 0,
-      titleSpacing: 16.0,
+      leading: _selectedToken != null
+          ? IconButton(
+              icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
+              onPressed: () {
+                setState(() {
+                  _selectedToken = null;
+                });
+              },
+            )
+          : null,
+      titleSpacing: _selectedToken != null ? 0 : 16.0,
       title: GestureDetector(
         key: _chainSelectorKey,
         onTap: () {
@@ -292,51 +305,62 @@ class _HomePageState extends State<HomePage> {
         ),
         const SizedBox(width: 16),
       ],
-      bottom: PreferredSize(
-        preferredSize: const Size.fromHeight(48),
-        child: Container(
-          height: 48,
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: _tabs.asMap().entries.map((entry) {
-                final index = entry.key;
-                final tabName = entry.value;
-                final isSelected = index == _selectedTabIndex;
-                
-                return GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      _selectedTabIndex = index;
-                    });
-                  },
-                  child: Container(
-                    margin: const EdgeInsets.only(right: 8),
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    decoration: BoxDecoration(
-                      color: isSelected ? Colors.grey[800] : Colors.transparent,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Text(
-                      tabName,
-                      style: TextStyle(
-                        color: isSelected ? Colors.white : Colors.grey[400],
-                        fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                        fontSize: 14,
-                      ),
-                    ),
+      bottom: _selectedToken == null
+          ? PreferredSize(
+              preferredSize: const Size.fromHeight(48),
+              child: Container(
+                height: 48,
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: _tabs.asMap().entries.map((entry) {
+                      final index = entry.key;
+                      final tabName = entry.value;
+                      final isSelected = index == _selectedTabIndex;
+
+                      return GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _selectedTabIndex = index;
+                          });
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.only(right: 8),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 8),
+                          decoration: BoxDecoration(
+                            color: isSelected
+                                ? Colors.grey[800]
+                                : Colors.transparent,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            tabName,
+                            style: TextStyle(
+                              color: isSelected ? Colors.white : Colors.grey[400],
+                              fontWeight: isSelected
+                                  ? FontWeight.bold
+                                  : FontWeight.normal,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ),
+                      );
+                    }).toList(),
                   ),
-                );
-              }).toList(),
-            ),
-          ),
-        ),
-      ),
+                ),
+              ),
+            )
+          : null,
     );
   }
 
   Widget _buildBody(BuildContext context) {
+    if (_selectedToken != null) {
+      return TokenTradePage(token: _selectedToken!);
+    }
+
     return IndexedStack(
       index: _selectedTabIndex,
       children: [
@@ -356,7 +380,14 @@ class _HomePageState extends State<HomePage> {
             itemCount: _tokenList.length,
             separatorBuilder: (context, index) => const SizedBox(height: 1),
             itemBuilder: (context, index) {
-              return _buildTokenListItem(_tokenList[index]);
+              return GestureDetector(
+                onTap: () {
+                  setState(() {
+                    _selectedToken = _tokenList[index];
+                  });
+                },
+                child: _buildTokenListItem(_tokenList[index]),
+              );
             },
           ),
         ),
@@ -644,6 +675,56 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildBottomNav() {
+    return BottomAppBar(
+      color: Colors.black,
+      child: Container(
+        height: 80,
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: <Widget>[
+            Expanded(
+              child: ElevatedButton.icon(
+                onPressed: () {},
+                icon: const Icon(Icons.flash_on, color: Colors.white),
+                label: const Text('Buy'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: ElevatedButton.icon(
+                onPressed: () {},
+                icon: const Icon(Icons.sell_outlined, color: Colors.white),
+                label: const Text('Sell'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+              ),
+            ),
+            IconButton(
+              onPressed: () {},
+              icon: const Icon(Icons.info_outline, color: Colors.white),
+            )
+          ],
+        ),
       ),
     );
   }

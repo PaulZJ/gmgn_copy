@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:go_router/go_router.dart';
 import '../../theme/app_theme.dart';
 import '../../constants.dart';
+import 'chain_dialog.dart';
 
 // 数据模型，用于表示榜单中的每个项目
 class TokenInfo {
@@ -50,6 +52,9 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final List<String> _tabs = ["Trenches", "New Coins", "Hot", "Copy Trading", "Monitor", "Track", "Positions"];
+
+  final _chainSelectorKey = GlobalKey();
+  late ChainInfo _selectedChain;
 
   // 基于截图的模拟数据
   final List<TokenInfo> _tokenList = [
@@ -157,6 +162,10 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   void initState() {
     super.initState();
     _tabController = TabController(length: _tabs.length, vsync: this);
+    _selectedChain = ChainInfo(
+        name: 'SOL',
+        iconUrl:
+            'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/solana/info/logo.png');
   }
 
   @override
@@ -182,28 +191,48 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       backgroundColor: const Color(0xFF131313),
       elevation: 0,
       titleSpacing: 16.0,
-      title: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Image.network(
-            'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/solana/info/logo.png', 
-            height: 24,
-            errorBuilder: (context, error, stackTrace) {
-              return Container(
-                height: 24,
-                width: 24,
-                decoration: BoxDecoration(
-                  color: Colors.grey[700],
-                  borderRadius: BorderRadius.circular(4),
-                ),
-                child: const Icon(Icons.currency_bitcoin, size: 16, color: Colors.white),
+      title: GestureDetector(
+        key: _chainSelectorKey,
+        onTap: () {
+          SmartDialog.showAttach(
+            targetContext: _chainSelectorKey.currentContext,
+            alignment: Alignment.bottomLeft,
+            builder: (context) {
+              return ChainDialog(
+                selectedChain: _selectedChain,
+                onChainSelected: (chain) {
+                  setState(() {
+                    _selectedChain = chain;
+                  });
+                  SmartDialog.dismiss();
+                },
               );
             },
-          ),
-          const SizedBox(width: 8),
-          const Text('SOL', style: TextStyle(color: Colors.white, fontSize: 14)),
-          const Icon(Icons.keyboard_arrow_down, size: 20),
-        ],
+          );
+        },
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Image.network(
+              _selectedChain.iconUrl,
+              height: 24,
+              errorBuilder: (context, error, stackTrace) {
+                return Container(
+                  height: 24,
+                  width: 24,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[700],
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: const Icon(Icons.currency_bitcoin, size: 16, color: Colors.white),
+                );
+              },
+            ),
+            const SizedBox(width: 8),
+            Text(_selectedChain.name, style: const TextStyle(color: Colors.white, fontSize: 14)),
+            const Icon(Icons.keyboard_arrow_down, size: 20, color: Colors.white),
+          ],
+        ),
       ),
       actions: [
         IconButton(onPressed: () {}, icon: const Icon(Icons.search, color: Colors.white)),

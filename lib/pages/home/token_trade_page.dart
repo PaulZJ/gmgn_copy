@@ -122,18 +122,25 @@ class _TokenTradePageState extends State<TokenTradePage> with TickerProviderStat
           child: SizedBox(
             height: 40,
             child: TextField(
-              style: const TextStyle(fontSize: 12, color: Colors.white),
+              style: const TextStyle(fontSize: 11, color: Colors.white),
               decoration: InputDecoration(
                 hintText: 'Name or CA',
-                hintStyle: TextStyle(color: Colors.grey[400], fontSize: 12),
-                prefixIcon: const Icon(Icons.search, size: 18, color: Colors.white),
-                filled: true,
-                fillColor: Colors.grey[900],
-                contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 12),
+                hintStyle: TextStyle(color: Colors.grey[400], fontSize: 11),
+                prefixIcon: const Padding(
+                  padding: EdgeInsets.all(5),
+                  child: Icon(Icons.search, size: 14, color: Colors.white),
+                ),
+                prefixIconConstraints: const BoxConstraints(
+                  minHeight: 14,
+                  minWidth: 14,
+                ),
+                contentPadding: const EdgeInsets.symmetric(vertical: 8),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
                   borderSide: BorderSide.none,
                 ),
+                filled: true,
+                fillColor: Colors.grey[900],
               ),
             ),
           ),

@@ -457,7 +457,10 @@ class _HomePageState extends State<HomePage> {
                 decoration: InputDecoration(
                   hintText: 'Search',
                   hintStyle: TextStyle(color: Colors.grey[400], fontSize: 11),
-                  prefixIcon: const Icon(Icons.search, size: 14, color: Colors.white),
+                  prefixIcon: const Padding(
+                    padding: EdgeInsets.all(5),
+                    child: Icon(Icons.search, size: 14, color: Colors.white),
+                  ),
                   prefixIconConstraints: const BoxConstraints(
                     minHeight: 14,
                     minWidth: 14,

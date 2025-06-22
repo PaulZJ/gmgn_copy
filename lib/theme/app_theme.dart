@@ -56,8 +56,8 @@ class AppTheme {
       onError: AppColors.textInverse,
     ),
     textTheme: ThemeData(brightness: Brightness.light).textTheme.apply(
-      fontFamily: 'Rubik',
-      fontFamilyFallback: ['PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'SimHei', 'Arial', 'sans-serif'],
+      fontFamily: 'NotoSansSC',
+      fontFamilyFallback: ['Roboto', 'Rubik', 'Nunito', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'SimHei', 'Arial', 'sans-serif'],
     ),
     appBarTheme: const AppBarTheme(
       backgroundColor: AppColors.surface,
@@ -144,8 +144,8 @@ class AppTheme {
       onError: AppColors.textInverse,
     ),
     textTheme: ThemeData(brightness: Brightness.dark).textTheme.apply(
-      fontFamily: 'Rubik',
-      fontFamilyFallback: ['PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'SimHei', 'Arial', 'sans-serif'],
+      fontFamily: 'NotoSansSC',
+      fontFamilyFallback: ['Roboto', 'Rubik', 'Nunito', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'SimHei', 'Arial', 'sans-serif'],
     ),
     appBarTheme: const AppBarTheme(
       backgroundColor: Color(0xFF1E293B),

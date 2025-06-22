@@ -6,6 +6,7 @@ import '../../constants.dart';
 import 'chain_dialog.dart';
 import 'login_dialog.dart';
 import 'signup_dialog.dart';
+import 'setting_dialog.dart';
 
 // 数据模型，用于表示榜单中的每个项目
 class TokenInfo {
@@ -56,6 +57,7 @@ class _HomePageState extends State<HomePage> {
   int _selectedTabIndex = 0; // 添加选中Tab索引
 
   final _chainSelectorKey = GlobalKey();
+  final _settingsButtonKey = GlobalKey();
   late ChainInfo _selectedChain;
 
   // 基于截图的模拟数据
@@ -236,7 +238,20 @@ class _HomePageState extends State<HomePage> {
       ),
       actions: [
         IconButton(onPressed: () {}, icon: const Icon(Icons.search, color: Colors.white)),
-        IconButton(onPressed: () {}, icon: const Icon(Icons.hexagon_outlined, color: Colors.white), iconSize: 20),
+        IconButton(
+          key: _settingsButtonKey,
+          onPressed: () {
+            SmartDialog.showAttach(
+              targetContext: _settingsButtonKey.currentContext,
+              alignment: Alignment.bottomRight,
+              builder: (context) {
+                return const SettingDialog();
+              },
+            );
+          },
+          icon: const Icon(Icons.hexagon_outlined, color: Colors.white),
+          iconSize: 20,
+        ),
         Padding(
           padding: EdgeInsets.symmetric(vertical: 12, horizontal: isSmallScreen ? 2 : 4),
           child: OutlinedButton(

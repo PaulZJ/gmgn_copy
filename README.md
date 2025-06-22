@@ -32,26 +32,23 @@ lib/
 - 🌙 **深色模式支持** - 自动跟随系统主题
 - 🚀 **路由管理** - 基于go_router的声明式路由
 - 📱 **状态管理** - 使用Provider进行状态管理
-- 🔐 **用户认证** - 登录、注册、个人资料管理
-- 📦 **依赖管理** - 完整的依赖配置
 - 🎯 **代码规范** - 遵循Flutter最佳实践
 
 ## 主要依赖
 
-- **路由**: go_router
 - **状态管理**: provider
-- **UI组件**: flutter_smart_dialog, flutter_easyloading
-- **网络**: cached_network_image, url_launcher
-- **存储**: shared_preferences, path_provider
-- **认证**: firebase_auth, google_sign_in
-- **工具**: flutter_hooks, intl, uuid
+- **网络请求**: dio, http
+- **导航**: go_router
+- **本地存储**: shared_preferences
+- **UI组件**: antd (自定义实现)
+- **工具**: url_launcher, flutter_hooks
 
 ## 快速开始
 
 1. **克隆项目**
    ```bash
-   git clone <repository-url>
-   cd gmgn_demo
+   git clone https://github.com/your-repo/gm-gn.git
+   cd gm-gn
    ```
 
 2. **安装依赖**
@@ -85,18 +82,19 @@ lib/
 
 ## 项目配置
 
-### Firebase配置
-
-如需使用Firebase功能，请：
-
-1. 在Firebase控制台创建项目
-2. 下载配置文件
-3. 更新 `lib/main.dart` 中的Firebase配置
-
 ### 环境配置
 
 - 开发环境: `flutter run`
 - 生产环境: `flutter build`
+
+### 图标生成
+
+项目使用 `flutter_launcher_icons` 包来生成应用图标。配置位于 `pubspec.yaml` 文件中。
+
+要生成图标，请运行：
+```bash
+flutter pub run flutter_launcher_icons:main
+```
 
 ## 贡献指南
 
@@ -108,7 +106,7 @@ lib/
 
 ## 许可证
 
-MIT License
+本项目基于 MIT 许可证。
 
 ## 联系方式
 

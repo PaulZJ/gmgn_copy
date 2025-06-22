@@ -58,11 +58,10 @@
 
 ### 主要依赖
 - **路由**: go_router ^13.2.0
-- **状态管理**: provider ^6.1.2
+- **状态管理**: provider
 - **UI组件**: flutter_smart_dialog, flutter_easyloading
 - **网络**: cached_network_image, url_launcher
 - **存储**: shared_preferences, path_provider
-- **认证**: firebase_auth, google_sign_in
 - **工具**: flutter_hooks, intl, uuid
 
 ## 项目特色

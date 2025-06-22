@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 // 应用颜色定义
 class AppColors {
@@ -56,7 +55,10 @@ class AppTheme {
       onBackground: AppColors.textPrimary,
       onError: AppColors.textInverse,
     ),
-    textTheme: GoogleFonts.rubikTextTheme(),
+    textTheme: ThemeData(brightness: Brightness.light).textTheme.apply(
+      fontFamily: 'Rubik',
+      fontFamilyFallback: ['PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'SimHei', 'Arial', 'sans-serif'],
+    ),
     appBarTheme: const AppBarTheme(
       backgroundColor: AppColors.surface,
       foregroundColor: AppColors.textPrimary,
@@ -141,7 +143,10 @@ class AppTheme {
       onBackground: AppColors.textInverse,
       onError: AppColors.textInverse,
     ),
-    textTheme: GoogleFonts.rubikTextTheme(ThemeData.dark().textTheme),
+    textTheme: ThemeData(brightness: Brightness.dark).textTheme.apply(
+      fontFamily: 'Rubik',
+      fontFamilyFallback: ['PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'SimHei', 'Arial', 'sans-serif'],
+    ),
     appBarTheme: const AppBarTheme(
       backgroundColor: Color(0xFF1E293B),
       foregroundColor: AppColors.textInverse,

@@ -15,53 +15,10 @@ class MainLayout extends StatefulWidget {
 }
 
 class _MainLayoutState extends State<MainLayout> {
-  int _currentIndex = 0;
-
-  final List<NavigationItem> _navigationItems = [
-    NavigationItem(
-      icon: Icons.home,
-      label: '首页',
-      route: '/',
-    ),
-    NavigationItem(
-      icon: Icons.add_circle_outline,
-      label: '创建',
-      route: '/create',
-    ),
-    NavigationItem(
-      icon: Icons.manage_accounts,
-      label: '管理',
-      route: '/management',
-    ),
-    NavigationItem(
-      icon: Icons.person,
-      label: '我的',
-      route: '/profile',
-    ),
-  ];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: widget.child,
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        currentIndex: _currentIndex,
-        onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-          context.go(_navigationItems[index].route);
-        },
-        selectedItemColor: AppColors.primary,
-        unselectedItemColor: AppColors.textSecondary,
-        items: _navigationItems.map((item) {
-          return BottomNavigationBarItem(
-            icon: Icon(item.icon),
-            label: item.label,
-          );
-        }).toList(),
-      ),
     );
   }
 }

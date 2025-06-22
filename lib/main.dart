@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:provider/provider.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:url_strategy/url_strategy.dart';
 
 import 'constants.dart';
@@ -23,29 +21,6 @@ void main() async {
   // 初始化全局状态
   final globalStore = GlobalStore();
   await globalStore.init();
-
-  // 初始化Firebase（可选）
-  try {
-    await Firebase.initializeApp(
-      options: const FirebaseOptions(
-        apiKey: "your-api-key",
-        authDomain: "your-auth-domain",
-        projectId: "your-project-id",
-        storageBucket: "your-storage-bucket",
-        messagingSenderId: "your-messaging-sender-id",
-        appId: "your-app-id",
-        measurementId: "your-measurement-id",
-      ),
-    );
-
-    // 初始化Analytics
-    final analytics = FirebaseAnalytics.instance;
-    await analytics.setAnalyticsCollectionEnabled(true);
-  } catch (e) {
-    if (kDebugMode) {
-      print('Firebase初始化失败: $e');
-    }
-  }
 
   // 配置图片缓存
   PaintingBinding.instance.imageCache.maximumSize = AppConstants.imageCacheSize;
